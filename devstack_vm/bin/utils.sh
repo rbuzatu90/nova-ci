@@ -6,7 +6,7 @@ BASEDIR=$(dirname $0)
 function run_wsman_cmd() {
     local host=$1
     local cmd=$2
-    $BASEDIR/wsmancmd.py -u $win_user -p $win_password -U https://$1:5986/wsman $cmd
+    $BASEDIR/wsmancmd.py -a certificate -c $SSL_CERT -k $SSL_KEY -U https://$1:5986/wsman $cmd
 }
 
 function get_win_files() {

@@ -7,7 +7,10 @@ source /usr/local/src/nova-ci/jobs/library.sh
 # Loading parameters
 source /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.txt
 
+# Load host and credentials
+source $CREDENTIALS_AND_HOST_FILE
+
 # building HyperV node
 echo $hyperv_node
-join_hyperv $hyperv_node $WIN_USER $WIN_PASS
+join_hyperv $hyperv_node $CERT $KEY
 

@@ -18,6 +18,7 @@ $projectName = $buildFor.split('/')[-1]
 $scriptLocation = [System.IO.Path]::GetDirectoryName($myInvocation.MyCommand.Definition)
 . "$scriptLocation\config.ps1"
 . "$scriptLocation\utils.ps1"
+. "$openstackDir\credentials_and_host.ps1"
 
 $hasProject = Test-Path $buildDir\$projectName
 $hasNova = Test-Path $buildDir\nova
@@ -32,9 +33,9 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $pip_conf_content = @"
 [global]
-index-url = http://10.0.110.1:8080/cloudbase/CI/+simple/
+index-url = http://$PIP_SERVER:8080/cloudbase/CI/+simple/
 [install]
-trusted-host = 10.0.110.1
+trusted-host = $PIP_SERVER
 "@
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -109,7 +110,7 @@ if ($hasBinDir -eq $false){
 }
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
-    Invoke-WebRequest -Uri "http://10.0.110.1/openstack_bin.zip" -OutFile "$bindir\openstack_bin.zip"
+    Invoke-WebRequest -Uri "http://$DL_SERVER:8080/openstack_bin.zip" -OutFile "$bindir\openstack_bin.zip"
     [System.IO.Compression.ZipFile]::ExtractToDirectory("$bindir\openstack_bin.zip", "$bindir")
     Remove-Item -Force "$bindir\openstack_bin.zip"
 }
@@ -157,7 +158,7 @@ if (Test-Path $pythonArchive)
 {
     Remove-Item -Force $pythonArchive
 }
-Invoke-WebRequest -Uri http://10.0.110.1/python.zip -OutFile $pythonArchive
+Invoke-WebRequest -Uri http://$DL_SERVER:8080/python.zip -OutFile $pythonArchive
 if (Test-Path $pythonDir)
 {
     Cmd /C "rmdir /S /Q $pythonDir"
